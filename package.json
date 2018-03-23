@@ -1,0 +1,42 @@
+{
+  "name": "webpage-extractor",
+  "version": "1.0.0",
+  "description": "Webpage HTML extractor. Including styles and javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/jest/bin/jest.js --verbose",
+    "start": "node .",
+    "test:watch": "./node_modules/jest/bin/jest.js --watchAll --verbose -i"
+  },
+  "keywords": [
+    "node",
+    "html",
+    "extractor"
+  ],
+  "author": "joanrufe",
+  "license": "ISC",
+  "dependencies": {
+    "dom-parser": "^0.1.5",
+    "jest": "^22.4.2",
+    "minimist": "^1.2.0",
+    "node-fetch": "^2.1.1"
+  },
+  "jest": {
+    "testRegex": "(/specs/.*|\\.spec)\\.js$",
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "./node_modules/"
+    ],
+    "testPathIgnorePatterns": [
+      "./node_modules/"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^22.4.3"
+  },
+  "engines": {
+    "node": ">=6.5"
+  }
+}
