@@ -6,6 +6,7 @@
   "scripts": {
     "test": "./node_modules/jest/bin/jest.js --verbose",
     "start": "node .",
+    "clean": "./node_modules/.bin/rimraf ./extracted-web-pages/*",
     "test:watch": "./node_modules/jest/bin/jest.js --watchAll --verbose -i"
   },
   "keywords": [
@@ -16,8 +17,8 @@
   "author": "joanrufe",
   "license": "ISC",
   "dependencies": {
-    "dom-parser": "^0.1.5",
     "jest": "^22.4.2",
+    "jsdom": "^11.7.0",
     "minimist": "^1.2.0",
     "node-fetch": "^2.1.1"
   },

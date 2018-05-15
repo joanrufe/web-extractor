@@ -10,7 +10,7 @@ function handleErorrs(res) {
 }
 
 function getHostName(url) {
-  const [protocol,/* ommit */,host, route] = url.split( '/' );
+  const [protocol, /* ommit */ , host, route] = url.split('/');
   return host
 }
 
@@ -20,44 +20,62 @@ const excludedDomains = [
 
 function downloadAssets(href, basepath) {
   const fileName = href.split('/').pop()
-  const isImage = /(\.|\/)(gif|jpe?g|png|ico)$/i.test(fileName);
+  const isImage = /(\.|\/)(gif|jpe?g|png)$/i.test(fileName);
   const domain = getHostName(href)
   const path = `${basepath}/${domain}`
 
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path)
   }
-  if(excludedDomains.includes(domain)){
+  if (excludedDomains.includes(domain)) {
     return Promise.resolve(false)
   }
+
+  function saveFile(content) {
+    const filePath = `${path}/${fileName}`
+    console.log(colors.FgCyan, href)
+    return ComposePromiseWithFsWrite({
+      filePath,
+      content,
+      isBinary: isImage
+    })
+  }
+
   return fetch(href)
-        .then(res => res.text())
-        .then(content => {
-            const filePath = `${path}/${fileName}`
-            console.log(colors.FgCyan,href)
-            return ComposePromiseWithFsWrite({
-              filePath,
-              content,
-              isBinary: isImage
-            })
-        })
-        .then(loggerMiddleWare)
-        .catch(handleErorrs)
+    .then(res => {
+      const newRes = isImage ? res.blob() : res.text()
+      return newRes
+    })
+    .then(saveFile)
+    .then(loggerMiddleWare)
+    .catch(handleErorrs)
 }
 
 const loggerMiddleWare = file => console.log(colors.FgGreen, file) || file
 
 // @TODO: Images fs.writeFile still not working
-const ComposePromiseWithFsWrite = ({filePath, content, isBinary}) => {
+const ComposePromiseWithFsWrite = ({
+  filePath,
+  content,
+  isBinary
+}) => {
   const args = [
-    filePath,
-    content
+    filePath
   ]
-  if(isBinary) args.push('binary')
-  return new Promise(function(resolve, reject){
-    args.push(err => err ? reject(err) : resolve(filePath))
-    fs.writeFile(...args)
-  })
+  if (isBinary) {
+    return new Promise(function (resolve, reject) {
+      args.push(Buffer.from(new Uint8Array(content)))
+      args.push('binary')
+      args.push(err => err ? reject(err) : resolve(filePath))
+      fs.writeFile(...args)
+    })
+  } else {
+    return new Promise(function (resolve, reject) {
+      args.push(content)
+      args.push(err => err ? reject(err) : resolve(filePath))
+      fs.writeFile(...args)
+    })
+  }
 }
 
 module.exports = downloadAssets

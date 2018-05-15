@@ -10,7 +10,8 @@
       "name": "Iniciar programa",
       "program": "${workspaceFolder}/index.js",
       "args": [
-        "https://www.google.com"
+        "/home/joanrufe/Proyectos/webpage-extractor/src/modules/test/data-tree.html",
+        "--data=.list"
       ]
     }
   ]
